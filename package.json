@@ -1,20 +1,25 @@
 {
-  "name": "end-of-module-assignement---database-and-information-systems",
+  "name": "csck542-groupc-ema",
   "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "main": "database.js",
+  "description": "Repository for UoL Group C's End Of Module assignment regarding Databases and Information Systems.",
+  "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelvaladas/CSCK542-GroupC-EMA.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miguelvaladas/CSCK542-GroupC-EMA/issues"
+  },
+  "homepage": "https://github.com/miguelvaladas/CSCK542-GroupC-EMA#readme",
   "dependencies": {
-    "body-parser": "^2.0.0-beta.1",
-    "dotenv": "^16.3.1",
-    "express": "^5.0.0-beta.1",
-    "mysql2": "^3.6.5",
-    "nodemon": "^3.0.1"
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "mysql2": "^3.6.5"
   }
 }
