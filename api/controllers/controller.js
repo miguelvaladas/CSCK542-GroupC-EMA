@@ -19,20 +19,21 @@ class Controller {
 
   async getCourses(req, res) {
     try {
-        const courses = await this.service.getCourses();
+        const userId = req.params.id;
+        const courses = await this.service.getCourses(userId);
         if (!courses) {
             return res.status(404).send('Courses not found');
         }
         res.json(courses);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+      } catch (error) {
+          res.status(500).send(error.message);
+      }
 }
 
   async getCourse(req, res) {
       try {
-          const id = req.params.id;
-          const course = await this.service.getCourse(id);
+          const userId = req.params.id;
+          const course = await this.service.getCourse(userId);
           if (!course[0]) {
               return res.status(404).send('Course not found');
           }
@@ -92,6 +93,20 @@ class Controller {
         }
         res.json(enrolments);
       } catch(error) {res.status(500).send(error.message);
+    }
+  }
+
+
+  async updateGrade(req, res) {
+    try {
+      const id = req.params.id;
+      const grade = req.body.grade;
+      const enrolmentId = req.params.enrolmentid;
+      await this.service.updateGrade(grade, enrolmentId, id);
+      res.send(`Grade has been updated`);
+
+    } catch(error) {
+      res.status(500).send(error.message);
     }
   }
 }

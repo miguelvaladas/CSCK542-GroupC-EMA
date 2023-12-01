@@ -23,6 +23,16 @@ class Dao {
         console.error('Error in getCourses', error);
         throw error;
     }
+  }
+    async getAvailableCourses() {{
+      try {
+          const [rows] = await this.pool.query('SELECT * FROM courses WHERE isAvailable = 1');
+          return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
+      } catch (error) {
+          console.error('Error in getAvailableCourses', error);
+          throw error;
+      }
+    }
 }
 
     async getCourseById(id) {
@@ -85,13 +95,20 @@ class Dao {
   async returnEnrolments() {
     try {
     const [rows] = await this.pool.query('SELECT * FROM enrolments');
-    return rows.map(row => new Enrolment(row.EnrollmentID, row.Mark, row.CourseID, row.UserID));
+    return rows.map(row => new Enrolment(row.EnrolmentID, row.Mark, row.CourseID, row.UserID));
     } catch(error) {
       console.error('Error in returnEnrolments', error);
       throw error;
     }
   }
-
+  async updateGrade(Mark, EnrolmentID) {
+    try{
+      await this.pool.query('UPDATE enrolments SET Mark = ? WHERE EnrolmentID = ?', [Mark, EnrolmentID]);
+    } catch(error) {
+      console.error('Error in updateGrade', error);
+      throw error;
+    }
+  }
 
       // Additional DAO methods...
 }

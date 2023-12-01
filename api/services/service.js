@@ -9,8 +9,14 @@ class Service {
     return user
   }
 
-  async getCourses() {
-    return await this.dao.getCourses();
+  async getCourses(userId) {
+    const user = await this.dao.getUserById(userId);
+    if (user[0].roleId === 3) {
+      return await this.dao.getAvailableCourses();
+    }else{
+      return await this.dao.getCourses();
+    }
+
 }
 
   async getCourse(id) {
@@ -46,6 +52,15 @@ class Service {
 
   async getEnrolments() {
     return await this.dao.returnEnrolments();
+  }
+
+  async updateGrade(Mark, EnrolmentID, userID) {
+    const user = await this.dao.getUserById(userID);
+    if (!user[0] || user[0].roleId !== 2) {
+      throw new Error(`User does not have permission`);
+  }
+    await this.dao.updateGrade(Mark, EnrolmentID);
+
   }
 }
 
