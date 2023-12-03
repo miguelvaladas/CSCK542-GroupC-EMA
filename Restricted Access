@@ -1,0 +1,57 @@
+// Check if user is admin
+const isAdmin = (req, res, next) => {
+  if (req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).send('Access denied. Admins only.');
+  }
+};
+
+// Check if user is teacher
+const isTeacher = (req, res, next) => {
+  if (req.user.role === 'teacher') {
+    next();
+  } else {
+    res.status(403).send('Access denied. Teachers only.');
+  }
+};
+
+// Check if user is student
+const isStudent = (req, res, next) => {
+  if (req.user.role === 'student') {
+    next();
+  } else {
+    res.status(403).send('Access denied. Students only.');
+  }
+};
+
+// Course availability
+app.put('/courses/:courseId/availability', isAdmin, (req, res) => {
+  const courseId = req.params.courseId;
+  res.send(`Course availability updated for course ${courseId}`);
+});
+
+// Assign courses to teachers
+app.post('/teachers/:teacherId/courses', isAdmin, (req, res) => {
+  const teacherId = req.params.teacherId;
+  res.send(`Courses assigned to teacher ${teacherId}`);
+});
+
+// Course list for students
+app.get('/courses', isStudent, (req, res) => {
+  res.send('List of available courses');
+});
+
+// Student's enrolment
+app.post('/students/:studentId/enroll/:courseId', isStudent, (req, res) => {
+  const studentId = req.params.studentId;
+  const courseId = req.params.courseId;
+  res.send(`Student ${studentId} enrolled in course ${courseId}`);
+});
+
+// Grading of students
+app.put('/teachers/:teacherId/students/:studentId/passOrFail', isTeacher, (req, res) => {
+  const teacherId = req.params.teacherId;
+  const studentId = req.params.studentId;
+  res.send(`Student ${studentId} result updated by teacher ${teacherId}`);
+});
