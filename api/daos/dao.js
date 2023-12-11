@@ -26,8 +26,8 @@ class Dao {
   }
     async getAvailableCourses() {{
       try {
-          const [rows] = await this.pool.query('SELECT * FROM courses WHERE isAvailable = 1');
-          return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
+          const [rows] = await this.pool.query('SELECT courses.CourseID, courses.Title, users.Name AS TeacherName, courses.isAvailable FROM courses, users WHERE users.UserID = courses.TeacherID AND courses.isAvailable = 1');
+          return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable, row.TeacherName));
       } catch (error) {
           console.error('Error in getAvailableCourses', error);
           throw error;
@@ -35,9 +35,10 @@ class Dao {
     }
 }
 
+
     async getCourseById(id) {
         try {
-            const [rows] = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
+            const [rows] = await this.pool.query('SELECT * FROM courses, users WHERE users.UserID = courses.TeacherID', [id]);
             return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
         } catch (error) {
             console.error('Error in getCourseById:', error);
