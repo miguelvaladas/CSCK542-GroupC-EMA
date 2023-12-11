@@ -38,7 +38,7 @@ class Dao {
 
     async getCourseById(id) {
         try {
-            const [rows] = await this.pool.query('SELECT * FROM courses, users WHERE users.UserID = courses.TeacherID', [id]);
+            const [rows] = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
             return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
         } catch (error) {
             console.error('Error in getCourseById:', error);
