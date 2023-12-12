@@ -47,10 +47,9 @@ class Controller {
     try {
         const teacherId = req.body.TeacherID;
         const courseId = req.params.courseid;
-        const userId = req.params.id;
         const teacher = await this.service.getUserById(teacherId);
-        await this.service.assignTeacher(courseId, teacherId, userId);
-        res.send(`Course has been assigned to teacher ${teacher.name}`);
+        await this.service.assignTeacher(courseId, teacherId);
+        res.send(`Course has been assigned to teacher ${teacher[0].name}`); // Use 'teacher[0].name'
     } catch (error) {
         if (error.message === 'Course not found') {
             res.status(404).send(error.message);
@@ -68,11 +67,12 @@ class Controller {
             const id = req.params.id;
             const user = await this.service.getUserById(id);
             const course = await this.service.getCourse(courseID);
+            console.log(course)
             if (!user[0]) {
                 return res.status(404).send('User not found');
             }
             await this.service.enroll(courseID, id);
-            res.send(`student ${user[0].name} has been enrolled in course ${course[0].title}`); // Use 'user[0].Name'
+            res.send(`student ${user[0].name} has been enrolled in course ${course[0].title}`); // Use 'user[0].name'
 
         } catch (error) {
             if (error.message === 'Course not found') {
@@ -109,5 +109,7 @@ class Controller {
       res.status(500).send(error.message);
     }
   }
+
+
 }
 module.exports = Controller;

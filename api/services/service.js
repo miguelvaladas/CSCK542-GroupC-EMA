@@ -6,6 +6,7 @@ class Service {
 
   async getUserById(id) {
     const user =  await this.dao.getUserById(id);
+
     return user
   }
 
@@ -13,35 +14,30 @@ class Service {
     const user = await this.dao.getUserById(userId);
     if (user[0].roleId === 3) {
       return await this.dao.getAvailableCourses();
+
     }else{
       return await this.dao.getCourses();
     }
-
-}
-
-  async getCourse(id) {
-      return await this.dao.getCourseById(id);
   }
 
-  async assignTeacher(courseId, teacherId, userId) {
+  async getCourse(id) {
+      const course = await this.dao.getCourseById(id);
+      return course
+  }
+
+  async assignTeacher(courseId, teacherId) {
     const course = await this.dao.getCourseById(courseId);
-    const user = await this.dao.getUserById(userId);
-    if (!user[0] || user[0].roleId !== 1) {
-        throw new Error(`User does not have permission`);
-    }
+
     if (!course[0]) {
         throw new Error('Course not found');
     }
     await this.dao.assignTeacher(teacherId, courseId);
   }
 
+
   async enroll(courseId, userId) {
     const course = await this.dao.getCourseById(courseId);
     const user = await this.dao.getUserById(userId);
-
-    if (!user || user[0].roleId !== 3) {
-        throw new Error(`User ${user[0].name} does not have permission`);
-    }
 
     if (!course[0]) {
         throw new Error('Course not found');
