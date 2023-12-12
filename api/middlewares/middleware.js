@@ -7,13 +7,10 @@ class RoleMiddleware {
   static async verifyRole(req, res, next, allowedRoles) {
       try {
           const userId = req.params.id;
-
           const user = await service.getUserById(userId);
-
           if (!user || !allowedRoles.includes(user[0].roleId)) {
-              return res.status(403).send('Access denied, user does not have permission');
+              return res.status(403).send(`Access denied, user ${user[0].name} does not have permission`);
           }
-
           next(); // User has the required role, proceed to the next middleware
       } catch (error) {
           res.status(500).send(error.message);

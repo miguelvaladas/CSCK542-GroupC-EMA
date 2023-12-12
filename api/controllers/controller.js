@@ -67,7 +67,6 @@ class Controller {
             const id = req.params.id;
             const user = await this.service.getUserById(id);
             const course = await this.service.getCourse(courseID);
-            console.log(course)
             if (!user[0]) {
                 return res.status(404).send('User not found');
             }

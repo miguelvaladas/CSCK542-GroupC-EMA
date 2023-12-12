@@ -3,6 +3,8 @@ const mysql = require('mysql2/promise');
 const Course = require('../models/course');
 const User = require('../models/user');
 const Enrolment = require('../models/enrolment');
+const availableCoursesMapper = require('../mappers/availableCoursesMapper')
+
 
 class Dao {
     constructor() {
@@ -27,7 +29,7 @@ class Dao {
     async getAvailableCourses() {{
       try {
           const [rows] = await this.pool.query('SELECT courses.CourseID, courses.Title, users.Name AS TeacherName, courses.isAvailable FROM courses, users WHERE users.UserID = courses.TeacherID AND courses.isAvailable = 1');
-          return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable, row.TeacherName));
+          return rows.map(availableCoursesMapper);
       } catch (error) {
           console.error('Error in getAvailableCourses', error);
           throw error;
