@@ -62,7 +62,7 @@ class Dao {
     try {
         await this.pool.query('UPDATE courses SET TeacherID = ? WHERE CourseID = ?', [teacherId, courseId]);
 
-        //fetch the updated course data
+
         const [updatedRows] = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [courseId]);
         if (updatedRows.length === 0) {
             throw new Error('Course not found');
@@ -73,18 +73,18 @@ class Dao {
         console.error('Error in assignTeacher:', error);
         throw error;
     }
-}
+  }
 
   async enroll(courseId, userId) {
     try {
-        // check if the enrollment already exists
+
         const [existingEnrolment] = await this.pool.query('SELECT * FROM enrolments WHERE CourseID = ? AND UserID = ?', [courseId, userId]);
 
         if (existingEnrolment.length > 0) {
             throw new Error('Enrollment already exists');
         }
 
-        // if it doesn't already exist create it
+
         await this.pool.query('INSERT INTO enrolments (CourseID, UserID) VALUES (?, ?)', [courseId, userId]);
 
     } catch(error) {
@@ -109,6 +109,11 @@ class Dao {
       console.error('Error in updateGrade', error);
       throw error;
     }
+  }
+
+  async updateCourse(data, courseId) {
+    console.log(data)
+    await this.pool.query('UPDATE courses SET ? WHERE CourseID = ?' [data, courseId])
   }
 
       // Additional DAO methods...
