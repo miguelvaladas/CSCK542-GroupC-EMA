@@ -1,63 +1,58 @@
+const Role = require('../util/role')
+
 class Service {
 
-  constructor(dao) {
-      this.dao = dao;
-  }
-
-  async getUserById(id) {
-    const user =  await this.dao.getUserById(id);
-
-    return user
-  }
-
-  async getCourses(userId) {
-    const user = await this.dao.getUserById(userId);
-    if (user[0].roleId === 3) {
-      return await this.dao.getAvailableCourses();
-
-    }else{
-      return await this.dao.getCourses();
+    constructor(dao) {
+        this.dao = dao;
     }
-  }
 
-  async getCourse(id) {
-      const course = await this.dao.getCourseById(id);
-      return course
-  }
-
-  async assignTeacher(courseId, teacherId) {
-    const course = await this.dao.getCourseById(courseId);
-
-    if (!course[0]) {
-        throw new Error('Course not found');
+    async getUserById(id) {
+        return await this.dao.getUserById(id);
     }
-    await this.dao.assignTeacher(teacherId, courseId);
-  }
 
+    async getCourses(userId) {
+        const user = await this.dao.getUserById(userId);
+        if (user[0].roleId === Role.STUDENT) {
+            return await this.dao.getAvailableCourses();
 
-  async enroll(courseId, userId) {
-    const course = await this.dao.getCourseById(courseId);
-    const user = await this.dao.getUserById(userId);
-
-    if (!course[0]) {
-        throw new Error('Course not found');
+        } else {
+            return await this.dao.getCourses();
+        }
     }
-    await this.dao.enroll(courseId, userId);
 
-  }
+    async getCourse(id) {
+        return await this.dao.getCourseById(id);
+    }
 
-  async getEnrolments() {
-    return await this.dao.returnEnrolments();
-  }
+    async assignTeacher(courseId, teacherId) {
+        const course = await this.dao.getCourseById(courseId);
+            if (!course[0]) {
+                throw new Error('Course not found');
+            }
+        await this.dao.assignTeacher(teacherId, courseId);
+    }
 
-  async updateGrade(Mark, EnrolmentID, userID) {
-    const user = await this.dao.getUserById(userID);
-    if (!user[0] || user[0].roleId !== 2) {
-      throw new Error(`User does not have permission`);
-  }
-    await this.dao.updateGrade(Mark, EnrolmentID);
 
-  }
+    async enroll(courseId, userId) {
+        const course = await this.dao.getCourseById(courseId);
+
+        if (!course[0]) {
+            throw new Error('Course not found');
+        }
+        await this.dao.enroll(courseId, userId);
+    }
+
+    async getEnrolments() {
+        return await this.dao.returnEnrolments();
+    }
+
+    async updateGrade(Mark, EnrolmentID, userID) {
+        const user = await this.dao.getUserById(userID);
+        if (!user[0] || user[0].roleId !== Role.TEACHER) {
+            throw new Error(`User does not have permission`);
+        }
+        await this.dao.updateGrade(Mark, EnrolmentID);
+    }
 }
 
 module.exports = Service;
