@@ -7,9 +7,9 @@ class RoleMiddleware {
   static async verifyRole(req, res, next, allowedRoles) {
       try {
           const userId = req.params.id;
-          // console.log(req.params.id)
+
           const user = await service.getUserById(userId);
-          // console.log(user)
+
           if (!user || !allowedRoles.includes(user[0].roleId)) {
               return res.status(403).send('Access denied, user does not have permission');
           }
