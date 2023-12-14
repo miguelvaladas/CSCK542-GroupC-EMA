@@ -38,12 +38,10 @@ class Service {
         if ("TeacherID" in data) {
           return await this.dao.assignTeacher(data.TeacherID, courseId);
         }
-        if ("isAvailable" in data || data.isAvailable === 1) {
-          return await this.dao.availCourse(courseId);
+        if ("isAvailable" in data) {
+          return await this.dao.availCourse(courseId, data.isAvailable);
      }
-        if ("isAvailable" in data || data.isAvailable === 0) {
-          return await this.dao.unAvailCourse(courseId);
-      }
+
         }
 
     async enroll(courseId, userId) {

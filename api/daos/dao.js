@@ -47,7 +47,7 @@ class Dao {
             const result = await this.databaseConnection.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
             const course = result[0][0]
             if (course === undefined) {
-              throw new Error("course does not exist")
+              throw new Error("course not found")
             }
             return mappers.courseMapper(course);
 
@@ -125,23 +125,15 @@ class Dao {
   }
 
 
-  async availCourse(courseId) {
+  async availCourse(courseId, data) {
     try{
-      await this.databaseConnection.query('UPDATE courses SET isAvailable = 1 WHERE CourseID = ?', [courseId]);
+      await this.databaseConnection.query('UPDATE courses SET isAvailable = ? WHERE CourseID = ?', [data, courseId]);
   } catch (error) {
     console.error('Error in availCourse', error);
     throw error;
   }
 }
 
-async unAvailCourse(courseId) {
-  try{
-    await this.databaseConnection.query('UPDATE courses SET isAvailable = 0 WHERE CourseID = ?', [courseId]);
-} catch (error) {
-  console.error('Error in availCourse', error);
-  throw error;
-}
-}
 }
 
 module.exports = Dao;
