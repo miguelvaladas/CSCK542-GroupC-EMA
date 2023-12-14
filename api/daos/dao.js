@@ -1,9 +1,7 @@
 // Data Access Object - Responsible for Accessing Database data, usually through some database connection object
 const mysql = require('mysql2/promise');
-const availableCoursesMapper = require('../mappers/availableCoursesMapper');
-const userMapper = require('../mappers/mapperUser');
-const courseMapper = require('../mappers/mapperCourse');
-const enrolmentMapper = require('../mappers/mapperEnrolment');
+
+const mappers = require('../mappers/mappers')
 
 
 class Dao {
@@ -20,7 +18,7 @@ class Dao {
   async getCourses() {
     try {
         const [rows] = await this.pool.query('SELECT * FROM courses');
-        return rows.map(courseMapper);
+        return rows.map(mappers.courseMapper);
     } catch (error) {
         console.error('Error in getCourses', error);
         throw error;
@@ -29,7 +27,7 @@ class Dao {
     async getAvailableCourses() {{
       try {
           const [rows] = await this.pool.query('SELECT courses.Title, users.Name AS TeacherName, courses.isAvailable FROM courses, users WHERE users.UserID = courses.TeacherID AND courses.isAvailable = 1');
-          return rows.map(availableCoursesMapper); // uses DTO mapper as the data returns is from 2 tables in the database that have been joined
+          return rows.map(mappers.availableCoursesMapper); // uses DTO mapper as the data returns is from 2 tables in the database that have been joined
       } catch (error) {
           console.error('Error in getAvailableCourses', error);
           throw error;
@@ -42,7 +40,7 @@ class Dao {
         try {
             const result = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
             const course = result[0][0]
-            return courseMapper(course);
+            return mappers.courseMapper(course);
         } catch (error) {
             console.error('Error in getCourseById:', error);
             throw error;
@@ -53,7 +51,7 @@ class Dao {
       try{
         const result = await this.pool.query('SELECT * FROM users WHERE UserID = ?', [userId]);
         const user = result[0][0]
-      return userMapper(user)
+      return mappers.userMapper(user)
       }
       catch (error) {
         console.error('Error in getUserById:', error);
@@ -99,7 +97,7 @@ class Dao {
   async returnEnrolments() {
     try {
     const [rows] = await this.pool.query('SELECT * FROM enrolments');
-    return rows.map(enrolmentMapper);
+    return rows.map(mappers.enrollmentMapper);
     } catch(error) {
       console.error('Error in returnEnrolments', error);
       throw error;
