@@ -14,8 +14,8 @@ router.get('/test', (req, res) => {
 router.get('/users/:id/courses', (req, res) => controller.getCourses(req, res));
 router.get('/users/:id/courses/:id', (req, res) => controller.getCourse(req, res));
 router.get('/users/:id', (req, res) => controller.getUserbyId(req, res));
-router.patch("/users/:id/courses/:courseid", RoleMiddleware.attachRequiredRoles([Role.ADMIN]), controller.checkUserRole((req, res) => controller.assignTeacher(req, res)));
-router.post("/users/:id/courses/:courseid", RoleMiddleware.attachRequiredRoles([Role.STUDENT]), controller.checkUserRole((req, res) => controller.enroll(req, res)));
+router.patch("/users/:id/courses/:courseid", RoleMiddleware.attachRequiredRoles([Role.ADMIN]), controller.checkUserRole, controller.assignTeacher);
+router.post("/users/:id/courses/:courseid", RoleMiddleware.attachRequiredRoles([Role.STUDENT]), controller.checkUserRole, controller.enroll);
 router.get('/users/:id/enrolments', (req, res) => controller.getEnrolments(req, res));
 router.patch("/users/:id/enrolments/:enrolmentid", (req, res) => controller.updateGrade(req, res));
 

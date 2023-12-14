@@ -6,6 +6,14 @@ class Service {
         this.dao = dao;
     }
 
+    async verifyUserRole(userId, allowedRoles) {
+        const user = await this.dao.getUserById(userId);
+        if (!user || !allowedRoles.includes(user.roleId)) {
+            throw new Error('Access denied, user does not have permission');
+        }
+        return true;
+    }
+
     async getUserById(id) {
         return await this.dao.getUserById(id);
     }
