@@ -28,8 +28,8 @@ class Dao {
   }
     async getAvailableCourses() {{
       try {
-          const [rows] = await this.pool.query('SELECT courses.CourseID, courses.Title, users.Name AS TeacherName, courses.isAvailable FROM courses, users WHERE users.UserID = courses.TeacherID AND courses.isAvailable = 1');
-          return rows.map(availableCoursesMapper);
+          const [rows] = await this.pool.query('SELECT courses.Title, users.Name AS TeacherName, courses.isAvailable FROM courses, users WHERE users.UserID = courses.TeacherID AND courses.isAvailable = 1');
+          return rows.map(availableCoursesMapper); // uses DTO mapper as the data returns is from 2 tables in the database that have been joined
       } catch (error) {
           console.error('Error in getAvailableCourses', error);
           throw error;
@@ -113,10 +113,6 @@ class Dao {
     }
   }
 
-  async updateCourse(data, courseId) {
-    console.log(data)
-    await this.pool.query('UPDATE courses SET ? WHERE CourseID = ?' [data, courseId])
-  }
 
       // Additional DAO methods...
 }

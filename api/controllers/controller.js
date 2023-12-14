@@ -99,10 +99,17 @@ class Controller {
   async updateGrade(req, res) {
     try {
       const id = req.params.id;
-      const grade = req.body.grade;
+      const grade = req.body.Mark;
+      console.log(req.body.Mark)
+      if (req.body.Mark === undefined ) { //make sure the user knows what to pass in the req.body
+        throw new Error(`Invalid input. Please use "Mark" in the request body, for example:
+        {
+          "Mark": 5
+        }
+        `);}
       const enrolmentId = req.params.enrolmentid;
       await this.service.updateGrade(grade, enrolmentId, id);
-      res.send(`Grade has been updated`);
+      res.send(`Mark has been updated`);
 
     } catch(error) {
       res.status(500).send(error.message);
