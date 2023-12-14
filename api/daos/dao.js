@@ -1,4 +1,4 @@
-// Data Access Object - Responsible for Accessing Database data, usually through some database connection object
+
 const mysql = require('mysql2/promise');
 const Course = require('../models/course');
 const User = require('../models/user');
@@ -102,14 +102,7 @@ class Dao {
       throw error;
     }
   }
-  // async updateGrade(Mark, EnrolmentID) {
-  //   try{
-  //     await this.pool.query('UPDATE enrolments SET Mark = ? WHERE EnrolmentID = ?', [Mark, EnrolmentID]);
-  //   } catch(error) {
-  //     console.error('Error in updateGrade', error);
-  //     throw error;
-  //   }
-  // }
+
 
   async updateCourse(data, courseId) {
     console.log(data)
