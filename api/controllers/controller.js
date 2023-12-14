@@ -16,6 +16,7 @@ class Controller {
         }
     }
 
+
     getUserbyId = async (req, res)  => {
     try {
       const id = req.params.id;
@@ -26,6 +27,7 @@ class Controller {
       res.json(user);
     } catch(error) {
       res.status(500).send(error.message);
+
     }
   }
 
@@ -55,6 +57,7 @@ class Controller {
       }
   }
 
+
    assignTeacher = async (req, res) => {
     try {
         const teacherId = req.body.TeacherID;
@@ -69,13 +72,14 @@ class Controller {
             res.status(403).send(error.message);
         } else {
             res.status(500).send(error.message);
+
         }
     }
   }
 
       enroll = async (req, res) =>{
         try {
-            const courseID = req.params.courseid;
+            const courseID = req.params.courseId;
             const id = req.params.id;
             const user = await this.service.getUserById(id);
             const course = await this.service.getCourse(courseID);
@@ -116,6 +120,7 @@ class Controller {
         throw new Error(`Invalid input. Please use "Mark" in the request body, for example:
         {
           "Mark": 5
+
         }
         `);}
       const enrolmentId = req.params.enrolmentid;

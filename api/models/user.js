@@ -1,6 +1,7 @@
 class User {
-    constructor(userId, name, roleId) {
-        this.userId = userId;
+
+    constructor(id, name, roleId) {
+        this.id = id;
         this.name = name;
         this.roleId = roleId;
     }
