@@ -15,7 +15,7 @@ class Controller {
         }
     }
 
-    async getUserbyId(req, res) {
+    async getUserById(req, res) {
         try {
             const id = req.params.id;
             const user = await this.service.getUserById(id);
@@ -56,8 +56,8 @@ class Controller {
 
     async assignTeacher(req, res) {
         try {
-            const teacherId = req.body.TeacherID;
-            const courseId = req.params.courseid;
+            const teacherId = req.body.teacherId;
+            const courseId = req.params.courseId;
             const teacher = await this.service.getUserById(teacherId);
             await this.service.assignTeacher(courseId, teacherId);
             res.send(`Course has been assigned to teacher ${teacher[0].name}`); // Use 'teacher[0].name'
@@ -74,7 +74,7 @@ class Controller {
 
     async enroll(req, res) {
         try {
-            const courseID = req.params.courseid;
+            const courseID = req.params.courseId;
             const id = req.params.id;
             const user = await this.service.getUserById(id);
             const course = await this.service.getCourse(courseID);
@@ -108,12 +108,11 @@ class Controller {
         }
     }
 
-
     async updateGrade(req, res) {
         try {
             const id = req.params.id;
             const grade = req.body.grade;
-            const enrolmentId = req.params.enrolmentid;
+            const enrolmentId = req.params.enrolmentId;
             await this.service.updateGrade(grade, enrolmentId, id);
             res.send(`Grade has been updated`);
 

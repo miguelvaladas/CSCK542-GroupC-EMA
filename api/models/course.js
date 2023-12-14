@@ -1,6 +1,7 @@
 class Course {
-    constructor(courseId, title, teacherId, isAvailable, teacherName) {
-        this.courseId = courseId;
+
+    constructor(id, title, teacherId, isAvailable, teacherName) {
+        this.id = id;
         this.title = title;
         this.teacherId = teacherId;
         this.isAvailable = isAvailable;

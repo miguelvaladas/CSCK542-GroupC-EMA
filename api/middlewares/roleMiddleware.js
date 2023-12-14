@@ -1,5 +1,8 @@
-
 class RoleMiddleware {
+
+    constructor() {
+        throw new Error('Do not instantiate it directly, use the static methods.');
+    }
 
     // Intercept request and attaches the required roles for verification
     static attachRequiredRoles(allowedRoles) {
