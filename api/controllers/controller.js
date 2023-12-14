@@ -1,69 +1,80 @@
 class Controller {
 
-  constructor(service) {
-      this.service = service;
-  }
-
-  async getUserbyId(req, res) {
-    try {
-      const id = req.params.id;
-      const user = await this.service.getUserById(id);
-      if (!user) {
-        return res.status(404).send('User not found');
-      }
-      res.json(user);
-    } catch(error) {
-      res.status(500).send(error.message);
+    constructor(service) {
+        this.service = service;
     }
-  }
 
-  async getCourses(req, res) {
-    try {
-        const userId = req.params.id;
-        const courses = await this.service.getCourses(userId);
-        if (!courses) {
-            return res.status(404).send('Courses not found');
-        }
-        res.json(courses);
-      } catch (error) {
-          res.status(500).send(error.message);
-      }
-}
-
-  async getCourse(req, res) {
-      try {
-          const userId = req.params.id;
-          const course = await this.service.getCourse(userId);
-          if (!course[0]) {
-              return res.status(404).send('Course not found');
-          }
-          res.json(course);
-      } catch (error) {
-          res.status(500).send(error.message);
-      }
-  }
-
-  async assignTeacher(req, res) {
-    try {
-        const teacherId = req.body.TeacherID;
-        const courseId = req.params.courseid;
-        const teacher = await this.service.getUserById(teacherId);
-        await this.service.assignTeacher(courseId, teacherId);
-        res.send(`Course has been assigned to teacher ${teacher[0].name}`); // Use 'teacher[0].name'
-    } catch (error) {
-        if (error.message === 'Course not found') {
-            res.status(404).send(error.message);
-        } else if (error.message === 'User does not have permission') {
+    async checkUserRole(req, res, next) {
+        try {
+            const userId = req.params.id;
+            const allowedRoles = req.allowedRoles;
+            await this.service.verifyUserRole(userId, allowedRoles);
+            next(); // User has the required role, proceed
+        } catch (error) {
             res.status(403).send(error.message);
-        } else {
+        }
+    }
+
+    async getUserById(req, res) {
+        try {
+            const id = req.params.id;
+            const user = await this.service.getUserById(id);
+            if (!user) {
+                return res.status(404).send('User not found');
+            }
+            res.json(user);
+        } catch (error) {
             res.status(500).send(error.message);
         }
     }
-  }
 
-      async enroll(req, res) {
+    async getCourses(req, res) {
         try {
-            const courseID = req.params.courseid;
+            const userId = req.params.id;
+            const courses = await this.service.getCourses(userId);
+            if (!courses) {
+                return res.status(404).send('Courses not found');
+            }
+            res.json(courses);
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    }
+
+    async getCourse(req, res) {
+        try {
+            const userId = req.params.id;
+            const course = await this.service.getCourse(userId);
+            if (!course[0]) {
+                return res.status(404).send('Course not found');
+            }
+            res.json(course);
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    }
+
+    async assignTeacher(req, res) {
+        try {
+            const teacherId = req.body.teacherId;
+            const courseId = req.params.courseId;
+            const teacher = await this.service.getUserById(teacherId);
+            await this.service.assignTeacher(courseId, teacherId);
+            res.send(`Course has been assigned to teacher ${teacher[0].name}`); // Use 'teacher[0].name'
+        } catch (error) {
+            if (error.message === 'Course not found') {
+                res.status(404).send(error.message);
+            } else if (error.message === 'User does not have permission') {
+                res.status(403).send(error.message);
+            } else {
+                res.status(500).send(error.message);
+            }
+        }
+    }
+
+    async enroll(req, res) {
+        try {
+            const courseID = req.params.courseId;
             const id = req.params.id;
             const user = await this.service.getUserById(id);
             const course = await this.service.getCourse(courseID);
@@ -86,40 +97,30 @@ class Controller {
     }
 
     async getEnrolments(req, res) {
-      try {
-        const enrolments = await this.service.getEnrolments();
-        if (!enrolments) {
-          return res.status(404).send('Enrolments not found');
+        try {
+            const enrolments = await this.service.getEnrolments();
+            if (!enrolments) {
+                return res.status(404).send('Enrolments not found');
+            }
+            res.json(enrolments);
+        } catch (error) {
+            res.status(500).send(error.message);
         }
-        res.json(enrolments);
-      } catch(error) {res.status(500).send(error.message);
     }
-  }
 
+    async updateGrade(req, res) {
+        try {
+            const id = req.params.id;
+            const grade = req.body.grade;
+            const enrolmentId = req.params.enrolmentId;
+            await this.service.updateGrade(grade, enrolmentId, id);
+            res.send(`Grade has been updated`);
 
-
-  async updateGrade(req, res) {
-    try {
-      const userId = req.params.id;
-      const grade = req.body.grade;
-      const enrolmentId = req.params.enrolmentid;
-  
-      // Check if the user making the request is a teacher (roleId = 2)
-      const user = await this.service.getUserById(userId);
-      if (!user || user[0].roleId !== 2) {
-        return res.status(403).send('User does not have permission to update grades');
-      }
-  
-      
-      await this.service.updateGrade(grade, enrolmentId, userId);
-  
-      res.send(`Grade has been updated`);
-    } catch (error) {
-      res.status(500).send(error.message);
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
     }
-  }
-  
-
 
 }
+
 module.exports = Controller;

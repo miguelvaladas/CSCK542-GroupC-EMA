@@ -1,10 +1,11 @@
-class Enrollment {
-    constructor(enrollmentId, mark, courseId, userId) {
-        this.enrollmentId = enrollmentId;
+class Enrolment {
+
+    constructor(id, mark, courseId, userId) {
+        this.id = id;
         this.mark = mark;
         this.courseId = courseId;
         this.userId = userId;
     }
 }
 
-module.exports = Enrollment;
+module.exports = Enrolment;
