@@ -8,14 +8,10 @@ class Controller {
         try {
             const userId = req.params.id;
             const allowedRoles = req.allowedRoles;
-            const user = await service.getUserById(userId);
-
-            if (!user || !allowedRoles.includes(user[0].roleId)) {
-                return res.status(403).send('Access denied, user does not have permission');
-            }
-            next(); // If user has the required role, proceed
+            await this.service.verifyUserRole(userId, allowedRoles);
+            next(); // User has the required role, proceed
         } catch (error) {
-            res.status(500).send(error.message);
+            res.status(403).send(error.message);
         }
     }
 
@@ -125,7 +121,6 @@ class Controller {
             res.status(500).send(error.message);
         }
     }
-
 
 }
 
