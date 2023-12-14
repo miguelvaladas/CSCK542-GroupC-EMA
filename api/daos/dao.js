@@ -1,9 +1,9 @@
 // Data Access Object - Responsible for Accessing Database data, usually through some database connection object
 const mysql = require('mysql2/promise');
-const Course = require('../models/course');
-const User = require('../models/user');
-const Enrolment = require('../models/enrolment');
-const availableCoursesMapper = require('../mappers/availableCoursesMapper')
+const availableCoursesMapper = require('../mappers/availableCoursesMapper');
+const mapperUser = require('../mappers/mapperUser');
+const mapperCourse = require('../mappers/mapperCourse');
+const mapperEnrolment = require('../mappers/mapperEnrolment');
 
 
 class Dao {
@@ -20,7 +20,7 @@ class Dao {
   async getCourses() {
     try {
         const [rows] = await this.pool.query('SELECT * FROM courses');
-        return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
+        return rows.map(mapperCourse);
     } catch (error) {
         console.error('Error in getCourses', error);
         throw error;
@@ -41,7 +41,7 @@ class Dao {
     async getCourseById(id) {
         try {
             const [rows] = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
-            return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
+            return rows.map(mapperCourse);
         } catch (error) {
             console.error('Error in getCourseById:', error);
             throw error;
@@ -51,7 +51,7 @@ class Dao {
     async getUserById(userId) {
       try{
         const [user] = await this.pool.query('SELECT * FROM users WHERE UserID = ?', [userId]);
-      return user.map(row => new User(row.UserID, row.Name, row.RoleID));
+      return user.map(mapperUser);
       }
       catch (error) {
         console.error('Error in getUserById:', error);
@@ -69,8 +69,7 @@ class Dao {
         if (updatedRows.length === 0) {
             throw new Error('Course not found');
         }
-        const updatedCourse = updatedRows[0];
-        return new Course(updatedCourse.CourseID, updatedCourse.Title, updatedCourse.TeacherID, updatedCourse.isAvailable);
+
     } catch (error) {
         console.error('Error in assignTeacher:', error);
         throw error;
@@ -98,7 +97,7 @@ class Dao {
   async returnEnrolments() {
     try {
     const [rows] = await this.pool.query('SELECT * FROM enrolments');
-    return rows.map(row => new Enrolment(row.EnrolmentID, row.Mark, row.CourseID, row.UserID));
+    return rows.map(mapperEnrolment);
     } catch(error) {
       console.error('Error in returnEnrolments', error);
       throw error;
