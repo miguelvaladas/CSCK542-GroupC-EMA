@@ -61,7 +61,7 @@ class Controller {
   updateCourse = async (req, res) => {
     try {
       const data = req.body
-      if ("TeacherID" in data || "isAvailable" in data)  { //make sure the user knows what to pass in the req.body
+      if ("TeacherID" in data || "isAvailable" in data)  {
 
           const courseId = req.params.courseId;
           await this.service.updateCourse(data, courseId);
@@ -78,16 +78,16 @@ class Controller {
             }
             `);
 
-  } catch (error) {
-      if (error.message === 'Course not found') {
-          res.status(404).send(error.message);
-      } else if (error.message === 'User does not have permission') {
-          res.status(403).send(error.message);
-      } else {
-          res.status(500).send(error.message);
+            } catch (error) {
+                if (error.message === 'Course not found') {
+                    res.status(404).send(error.message);
+                } else if (error.message === 'User does not have permission') {
+                    res.status(403).send(error.message);
+                } else {
+                    res.status(500).send(error.message);
 
-      }
-  }
+                }
+            }
   }
 
 
