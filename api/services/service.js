@@ -34,14 +34,17 @@ class Service {
         return course
     }
 
-    async assignTeacher(courseId, teacherId) {
-        const course = await this.dao.getCourseById(courseId);
-            if (!course) {
-                throw new Error('Course not found');
-            }
-        await this.dao.assignTeacher(teacherId, courseId);
-    }
-
+    async updateCourse(data, courseId) {
+        if ("TeacherID" in data) {
+          return await this.dao.assignTeacher(data.TeacherID, courseId);
+        }
+        if ("isAvailable" in data || data.isAvailable === 1) {
+          return await this.dao.availCourse(courseId);
+     }
+        if ("isAvailable" in data || data.isAvailable === 0) {
+          return await this.dao.unAvailCourse(courseId);
+      }
+        }
 
     async enroll(courseId, userId) {
         const course = await this.dao.getCourseById(courseId);
@@ -66,6 +69,6 @@ class Service {
 
     }
   }
-}
+
 
 module.exports = Service;
