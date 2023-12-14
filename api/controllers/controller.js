@@ -17,7 +17,7 @@ class Controller {
     }
 
 
-    getUserbyId = async (req, res)  => {
+    getUserById = async (req, res)  => {
     try {
       const id = req.params.id;
       const user = await this.service.getUserById(id);
@@ -48,7 +48,7 @@ class Controller {
       try {
           const courseId = req.params.id;
           const course = await this.service.getCourse(courseId);
-          if (!course) {
+          if (course === undefined) {
               return res.status(404).send('Course not found');
           }
           res.json(course);
@@ -58,24 +58,38 @@ class Controller {
   }
 
 
-   assignTeacher = async (req, res) => {
+  updateCourse = async (req, res) => {
     try {
-        const teacherId = req.body.TeacherID;
-        const courseId = req.params.courseid;
-        const teacher = await this.service.getUserById(teacherId);
-        await this.service.assignTeacher(courseId, teacherId);
-        res.send(`Course has been assigned to teacher ${teacher.name}`);
-    } catch (error) {
-        if (error.message === 'Course not found') {
-            res.status(404).send(error.message);
-        } else if (error.message === 'User does not have permission') {
-            res.status(403).send(error.message);
-        } else {
-            res.status(500).send(error.message);
+      const data = req.body
+      if ("TeacherID" in data || "isAvailable" in data)  { //make sure the user knows what to pass in the req.body
 
-        }
-    }
+          const courseId = req.params.courseId;
+          await this.service.updateCourse(data, courseId);
+          res.send(`Course has been updated`);
+
+      } else
+            throw new Error(`Invalid input. Please use "isAvailable" or "TeacherID" in the request body, for example:
+            {
+              "TeacherID" : 5
+            }
+                OR
+            {
+              "isAvailable" : 1
+            }
+            `);
+
+  } catch (error) {
+      if (error.message === 'Course not found') {
+          res.status(404).send(error.message);
+      } else if (error.message === 'User does not have permission') {
+          res.status(403).send(error.message);
+      } else {
+          res.status(500).send(error.message);
+
+      }
   }
+  }
+
 
       enroll = async (req, res) =>{
         try {
