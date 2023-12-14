@@ -8,19 +8,20 @@ class Service {
 
     async verifyUserRole(userId, allowedRoles) {
         const user = await this.dao.getUserById(userId);
-        if (!user || !allowedRoles.includes(user[0].roleId)) {
+        if (!user || !allowedRoles.includes(user.roleId)) {
             throw new Error('Access denied, user does not have permission');
         }
         return true;
     }
 
     async getUserById(id) {
-        return await this.dao.getUserById(id);
+        const user = await this.dao.getUserById(id);
+        return user
     }
 
     async getCourses(userId) {
         const user = await this.dao.getUserById(userId);
-        if (user[0].roleId === Role.STUDENT) {
+        if (user.roleId === Role.STUDENT) {
             return await this.dao.getAvailableCourses();
 
         } else {
@@ -29,12 +30,13 @@ class Service {
     }
 
     async getCourse(id) {
-        return await this.dao.getCourseById(id);
+        const course =  await this.dao.getCourseById(id);
+        return course
     }
 
     async assignTeacher(courseId, teacherId) {
         const course = await this.dao.getCourseById(courseId);
-            if (!course[0]) {
+            if (!course) {
                 throw new Error('Course not found');
             }
         await this.dao.assignTeacher(teacherId, courseId);
@@ -44,7 +46,7 @@ class Service {
     async enroll(courseId, userId) {
         const course = await this.dao.getCourseById(courseId);
 
-        if (!course[0]) {
+        if (!course) {
             throw new Error('Course not found');
         }
         await this.dao.enroll(courseId, userId);
@@ -56,7 +58,7 @@ class Service {
 
     async updateGrade(Mark, EnrolmentID, userID) {
         const user = await this.dao.getUserById(userID);
-        if (!user[0] || user[0].roleId !== Role.TEACHER) {
+        if (!user || user.roleId !== Role.TEACHER) {
             throw new Error(`User does not have permission`);
         }
         await this.dao.updateGrade(Mark, EnrolmentID);

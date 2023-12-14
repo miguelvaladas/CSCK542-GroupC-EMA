@@ -1,9 +1,9 @@
 // Data Access Object - Responsible for Accessing Database data, usually through some database connection object
 const mysql = require('mysql2/promise');
 const availableCoursesMapper = require('../mappers/availableCoursesMapper');
-const mapperUser = require('../mappers/mapperUser');
-const mapperCourse = require('../mappers/mapperCourse');
-const mapperEnrolment = require('../mappers/mapperEnrolment');
+const userMapper = require('../mappers/mapperUser');
+const courseMapper = require('../mappers/mapperCourse');
+const enrolmentMapper = require('../mappers/mapperEnrolment');
 
 
 class Dao {
@@ -20,7 +20,7 @@ class Dao {
   async getCourses() {
     try {
         const [rows] = await this.pool.query('SELECT * FROM courses');
-        return rows.map(mapperCourse);
+        return rows.map(courseMapper);
     } catch (error) {
         console.error('Error in getCourses', error);
         throw error;
@@ -40,8 +40,9 @@ class Dao {
 
     async getCourseById(id) {
         try {
-            const [rows] = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
-            return rows.map(mapperCourse);
+            const result = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
+            const course = result[0][0]
+            return courseMapper(course);
         } catch (error) {
             console.error('Error in getCourseById:', error);
             throw error;
@@ -50,8 +51,9 @@ class Dao {
 
     async getUserById(userId) {
       try{
-        const [user] = await this.pool.query('SELECT * FROM users WHERE UserID = ?', [userId]);
-      return user.map(mapperUser);
+        const result = await this.pool.query('SELECT * FROM users WHERE UserID = ?', [userId]);
+        const user = result[0][0]
+      return userMapper(user)
       }
       catch (error) {
         console.error('Error in getUserById:', error);
@@ -97,7 +99,7 @@ class Dao {
   async returnEnrolments() {
     try {
     const [rows] = await this.pool.query('SELECT * FROM enrolments');
-    return rows.map(mapperEnrolment);
+    return rows.map(enrolmentMapper);
     } catch(error) {
       console.error('Error in returnEnrolments', error);
       throw error;
