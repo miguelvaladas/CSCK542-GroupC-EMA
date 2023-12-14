@@ -50,17 +50,22 @@ class Service {
         await this.dao.enroll(courseId, userId);
     }
 
-    async getEnrolments() {
-        return await this.dao.returnEnrolments();
+  async updateGrade(Mark, EnrolmentID, userID) {
+    try {
+      
+      const user = await this.dao.getUserById(userID);
+      const enrolment = await this.dao.getEnrolmentById(EnrolmentID); 
+  
+      if (enrolment[0].TeacherID !== userID) {
+        throw new Error('Current teacher does not have permission to update grades for this enrolment');
+      }
+  
+      await this.dao.updateGrade(Mark, EnrolmentID, userID);
+    } catch (error) {
+      console.error('Error in updateGrade', error);
+      throw error;
     }
-
-    async updateGrade(Mark, EnrolmentID, userID) {
-        const user = await this.dao.getUserById(userID);
-        if (!user[0] || user[0].roleId !== Role.TEACHER) {
-            throw new Error(`User does not have permission`);
-        }
-        await this.dao.updateGrade(Mark, EnrolmentID);
-    }
+  }
 }
 
 module.exports = Service;
