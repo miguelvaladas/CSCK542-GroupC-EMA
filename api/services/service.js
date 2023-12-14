@@ -8,7 +8,11 @@ class Service {
 
     async verifyUserRole(userId, allowedRoles) {
         const user = await this.dao.getUserById(userId);
-        if (!user || !allowedRoles.includes(user.roleId)) {
+        console.log(user[0].roleId)
+        const roleId = user[0].roleId
+        console.log(roleId)
+        if (!user || !allowedRoles.includes(user[0].roleId)) {
+          console.log(user)
             throw new Error('Access denied, user does not have permission');
         }
         return true;

@@ -4,7 +4,7 @@ class Controller {
       this.service = service;
   }
 
-    async checkUserRole(req, res, next) {
+    checkUserRole = async (req, res, next) => {
         try {
             const userId = req.params.id;
             const allowedRoles = req.allowedRoles;
@@ -12,10 +12,11 @@ class Controller {
             next(); // User has the required role, proceed
         } catch (error) {
             res.status(403).send(error.message);
+            console.error(error)
         }
     }
 
-  async getUserbyId(req, res) {
+    getUserbyId = async (req, res)  => {
     try {
       const id = req.params.id;
       const user = await this.service.getUserById(id);
@@ -28,7 +29,7 @@ class Controller {
     }
   }
 
-  async getCourses(req, res) {
+    getCourses = async (req, res)  =>{
     try {
         const userId = req.params.id;
         const courses = await this.service.getCourses(userId);
@@ -41,7 +42,7 @@ class Controller {
       }
 }
 
-  async getCourse(req, res) {
+   getCourse = async (req, res) => {
       try {
           const userId = req.params.id;
           const course = await this.service.getCourse(userId);
@@ -54,7 +55,7 @@ class Controller {
       }
   }
 
-  async assignTeacher(req, res) {
+   assignTeacher = async (req, res) => {
     try {
         const teacherId = req.body.TeacherID;
         const courseId = req.params.courseid;
@@ -72,7 +73,7 @@ class Controller {
     }
   }
 
-      async enroll(req, res) {
+      enroll = async (req, res) =>{
         try {
             const courseID = req.params.courseid;
             const id = req.params.id;
@@ -95,7 +96,7 @@ class Controller {
         }
     }
 
-    async getEnrolments(req, res) {
+     getEnrolments = async (req, res) => {
       try {
         const enrolments = await this.service.getEnrolments();
         if (!enrolments) {
@@ -107,7 +108,7 @@ class Controller {
   }
 
 
-  async updateGrade(req, res) {
+    updateGrade = async (req, res) => {
     try {
       const id = req.params.id;
       const grade = req.body.Mark;
