@@ -4,6 +4,17 @@ class Controller {
       this.service = service;
   }
 
+    async checkUserRole(req, res, next) {
+        try {
+            const userId = req.params.id;
+            const allowedRoles = req.allowedRoles;
+            await this.service.verifyUserRole(userId, allowedRoles);
+            next(); // User has the required role, proceed
+        } catch (error) {
+            res.status(403).send(error.message);
+        }
+    }
+
   async getUserbyId(req, res) {
     try {
       const id = req.params.id;
