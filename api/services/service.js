@@ -52,6 +52,7 @@ class Service {
         await this.dao.enroll(courseId, userId);
     }
 
+
     async getEnrolments() {
         return await this.dao.returnEnrolments();
     }
@@ -62,7 +63,9 @@ class Service {
             throw new Error(`User does not have permission`);
         }
         await this.dao.updateGrade(Mark, EnrolmentID);
+
     }
+  }
 }
 
 module.exports = Service;
