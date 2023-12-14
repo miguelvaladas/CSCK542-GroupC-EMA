@@ -1,8 +1,8 @@
 
 const mysql = require('mysql2/promise');
-const Course = require('../models/course');
-const User = require('../models/user');
-const Enrolment = require('../models/enrolment');
+
+const mappers = require('../mappers/mappers')
+
 
 class Dao {
 
@@ -20,10 +20,25 @@ class Dao {
             const [rows] = await this.databaseConnection.query('SELECT * FROM courses');
             return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
 
-        } catch (error) {
-            console.error('Error in getCourses', error);
-            throw error;
-        }
+
+  async getCourses() {
+    try {
+        const [rows] = await this.pool.query('SELECT * FROM courses');
+        return rows.map(mappers.courseMapper);
+    } catch (error) {
+        console.error('Error in getCourses', error);
+        throw error;
+    }
+  }
+    async getAvailableCourses() {{
+      try {
+          const [rows] = await this.pool.query('SELECT courses.Title, users.Name AS TeacherName, courses.isAvailable FROM courses, users WHERE users.UserID = courses.TeacherID AND courses.isAvailable = 1');
+          return rows.map(mappers.availableCoursesMapper); // uses DTO mapper as the data returns is from 2 tables in the database that have been joined
+      } catch (error) {
+          console.error('Error in getAvailableCourses', error);
+          throw error;
+      }
+
     }
 
     async getAvailableCourses() {
@@ -41,8 +56,10 @@ class Dao {
 
     async getCourseById(id) {
         try {
-            const [rows] = await this.databaseConnection.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
-            return rows.map(row => new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable));
+
+            const result = await this.pool.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
+            const course = result[0][0]
+            return mappers.courseMapper(course);
 
         } catch (error) {
             console.error('Error in getCourseById:', error);
@@ -51,9 +68,19 @@ class Dao {
     }
 
     async getUserById(userId) {
-        try {
-            const [user] = await this.databaseConnection.query('SELECT * FROM users WHERE UserID = ?', [userId]);
-            return user.map(row => new User(row.UserID, row.Name, row.RoleID));
+
+      try{
+        const result = await this.pool.query('SELECT * FROM users WHERE UserID = ?', [userId]);
+        const user = result[0][0]
+      return mappers.userMapper(user)
+      }
+      catch (error) {
+        console.error('Error in getUserById:', error);
+        throw error;
+      }
+
+  }
+
 
         } catch (error) {
             console.error('Error in getUserById:', error);
@@ -75,6 +102,7 @@ class Dao {
             console.error('Error in assignTeacher:', error);
             throw error;
         }
+
     }
 
     async enroll(courseId, userId) {
@@ -91,15 +119,17 @@ class Dao {
         }
     }
 
-    async returnEnrolments() {
-        try {
-            const [rows] = await this.databaseConnection.query('SELECT * FROM enrolments');
-            return rows.map(row => new Enrolment(row.EnrolmentID, row.Mark, row.CourseID, row.UserID));
 
-        } catch (error) {
-            console.error('Error in returnEnrolments', error);
-            throw error;
-        }
+
+  async returnEnrolments() {
+    try {
+    const [rows] = await this.pool.query('SELECT * FROM enrolments');
+    return rows.map(mappers.enrollmentMapper);
+    } catch(error) {
+      console.error('Error in returnEnrolments', error);
+      throw error;
+
+      
     }
 
  async updateGrade(Mark, EnrolmentID, TeacherID) {
@@ -116,10 +146,7 @@ class Dao {
     }
   }
 
-    async updateCourse(data, courseId) {
-        console.log(data)
-        await this.databaseConnection.query('UPDATE courses SET ? WHERE CourseID = ?' [data, courseId])
-    }
+
 }
 
 module.exports = Dao;

@@ -15,12 +15,13 @@ class Service {
     }
 
     async getUserById(id) {
-        return await this.dao.getUserById(id);
+        const user = await this.dao.getUserById(id);
+        return user
     }
 
     async getCourses(userId) {
         const user = await this.dao.getUserById(userId);
-        if (user[0].roleId === Role.STUDENT) {
+        if (user.roleId === Role.STUDENT) {
             return await this.dao.getAvailableCourses();
 
         } else {
@@ -29,12 +30,13 @@ class Service {
     }
 
     async getCourse(id) {
-        return await this.dao.getCourseById(id);
+        const course =  await this.dao.getCourseById(id);
+        return course
     }
 
     async assignTeacher(courseId, teacherId) {
         const course = await this.dao.getCourseById(courseId);
-            if (!course[0]) {
+            if (!course) {
                 throw new Error('Course not found');
             }
         await this.dao.assignTeacher(teacherId, courseId);
@@ -44,26 +46,24 @@ class Service {
     async enroll(courseId, userId) {
         const course = await this.dao.getCourseById(courseId);
 
-        if (!course[0]) {
+        if (!course) {
             throw new Error('Course not found');
         }
         await this.dao.enroll(courseId, userId);
     }
 
-  async updateGrade(Mark, EnrolmentID, userID) {
-    try {
-      
-      const user = await this.dao.getUserById(userID);
-      const enrolment = await this.dao.getEnrolmentById(EnrolmentID); 
-  
-      if (enrolment[0].TeacherID !== userID) {
-        throw new Error('Current teacher does not have permission to update grades for this enrolment');
-      }
-  
-      await this.dao.updateGrade(Mark, EnrolmentID, userID);
-    } catch (error) {
-      console.error('Error in updateGrade', error);
-      throw error;
+
+    async getEnrolments() {
+        return await this.dao.returnEnrolments();
+    }
+
+    async updateGrade(Mark, EnrolmentID, userID) {
+        const user = await this.dao.getUserById(userID);
+        if (!user || user.roleId !== Role.TEACHER) {
+            throw new Error(`User does not have permission`);
+        }
+        await this.dao.updateGrade(Mark, EnrolmentID);
+
     }
   }
 }
