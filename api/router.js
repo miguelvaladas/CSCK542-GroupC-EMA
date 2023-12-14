@@ -17,7 +17,7 @@ router.get('/users/:id', (req, res) => controller.getUserById(req, res));
 router.patch("/users/:id/courses/:courseId", RoleMiddleware.attachRequiredRoles([Role.ADMIN]), controller.checkUserRole, controller.assignTeacher);
 router.post("/users/:id/courses/:courseId", RoleMiddleware.attachRequiredRoles([Role.STUDENT]), controller.checkUserRole, controller.enroll);
 router.get('/users/:id/enrolments', (req, res) => controller.getEnrolments(req, res));
-router.patch("/users/:id/enrolments/:enrolmentId", (req, res) => controller.updateGrade(req, res));
+router.patch("/users/:id/enrolments/:enrolmentId", RoleMiddleware.attachRequiredRoles([Role.TEACHER]), controller.checkUserRole, controller.updateGrade);
 
 router.get('*', (req, res) => {
     res.status(404).send('Route not found');
