@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const mappers = require('../util/mappers')
+const mappers = require("../util/mappers");
 
 
 class Dao {
@@ -63,12 +63,10 @@ class Dao {
     async assignTeacher(teacherId, courseId) {
         try {
             await this.databaseConnection.query('UPDATE courses SET TeacherID = ? WHERE CourseID = ?', [teacherId, courseId]);
-
         } catch (error) {
             console.error('Error in assignTeacher:', error);
             throw error;
         }
-
     }
 
     async enroll(courseId, userId) {
@@ -88,17 +86,17 @@ class Dao {
     async returnEnrolments() {
         try {
             const [rows] = await this.databaseConnection.query('SELECT * FROM enrolments');
-            return rows.map(mappers.mapToEnrollment);
+            return rows.map(mappers.mapToEnrolment);
         } catch (error) {
             console.error('Error in returnEnrolments', error);
             throw error;
         }
     }
 
-    async updateGrade(Mark, EnrolmentID, TeacherID) {
+    async updateMark(mark, enrolmentId, teacherId) {
         try {
             // Add a check for the EnrolmentID belonging to a course assigned to the specific teacher
-            const [rows] = await this.databaseConnection.query('UPDATE enrolments SET Mark = ? WHERE EnrolmentID = ? AND CourseID IN (SELECT CourseID FROM courses WHERE TeacherID = ?)', [Mark, EnrolmentID, TeacherID]);
+            const [rows] = await this.databaseConnection.query('UPDATE enrolments SET Mark = ? WHERE EnrolmentID = ? AND CourseID IN (SELECT CourseID FROM courses WHERE TeacherID = ?)', [mark, enrolmentId, teacherId]);
             if (rows.affectedRows === 0) {
                 throw new Error('Enrolment not found or not assigned to the specific teacher');
             }
@@ -108,9 +106,9 @@ class Dao {
         }
     }
 
-    async availCourse(courseId, data) {
+    async updateCourseAvailability(courseId, availability) {
         try {
-            await this.databaseConnection.query('UPDATE courses SET isAvailable = ? WHERE CourseID = ?', [data, courseId]);
+            await this.databaseConnection.query('UPDATE courses SET isAvailable = ? WHERE CourseID = ?', [availability, courseId]);
         } catch (error) {
             console.error('Error in availCourse', error);
             throw error;

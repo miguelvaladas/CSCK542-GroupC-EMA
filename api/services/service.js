@@ -35,9 +35,20 @@ class Service {
     async updateCourse(data, courseId) {
         if ("TeacherID" in data) {
             return await this.dao.assignTeacher(data.TeacherID, courseId);
-        }
-        if ("isAvailable" in data) {
-            return await this.dao.availCourse(courseId, data.isAvailable);
+
+        } else if ("isAvailable" in data) {
+            return await this.dao.updateCourseAvailability(courseId, data.isAvailable);
+
+        } else {
+            throw new Error(`Invalid input. Please use "isAvailable" or "TeacherID" in the request body, for example:
+            {
+              "TeacherID" : 5
+            }
+                OR
+            {
+              "isAvailable" : 1
+            }
+            `);
         }
     }
 
@@ -53,15 +64,21 @@ class Service {
         return await this.dao.returnEnrolments();
     }
 
-    async updateGrade(mark, enrolmentId, userId) {
+    async updateMark(mark, enrolmentId, userId) {
+        if (mark === undefined) { //make sure the user knows what to pass in the req.body
+            throw new Error(`Invalid input. Please use "Mark" in the request body, for example:
+        {
+          "Mark": 5
+
+        }
+        `);
+        }
+
         const user = await this.dao.getUserById(userId);
         if (!user || user.roleId !== Role.TEACHER) {
             throw new Error(`User does not have permission`);
         }
-        console.log("mark:" + mark)
-        console.log("enrolmentId:" + enrolmentId)
-        console.log("teacherID:" + userId)
-        await this.dao.updateGrade(mark, enrolmentId, userId);
+        await this.dao.updateMark(mark, enrolmentId, userId);
     }
 }
 

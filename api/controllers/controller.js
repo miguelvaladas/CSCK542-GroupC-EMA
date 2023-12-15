@@ -58,22 +58,9 @@ class Controller {
     updateCourse = async (req, res) => {
         try {
             const data = req.body
-            if ("TeacherID" in data || "isAvailable" in data) {
-
-                const courseId = req.params.courseId;
-                await this.service.updateCourse(data, courseId);
-                res.send(`Course has been updated`);
-
-            } else
-                throw new Error(`Invalid input. Please use "isAvailable" or "TeacherID" in the request body, for example:
-            {
-              "TeacherID" : 5
-            }
-                OR
-            {
-              "isAvailable" : 1
-            }
-            `);
+            const courseId = req.params.courseId;
+            await this.service.updateCourse(data, courseId);
+            res.send(`Course has been updated`);
 
         } catch (error) {
             if (error.message === 'Course not found') {
@@ -122,20 +109,12 @@ class Controller {
         }
     }
 
-    updateGrade = async (req, res) => {
+    updateMark = async (req, res) => {
         try {
             const id = req.params.id;
-            const grade = req.body.Mark;
-            if (req.body.Mark === undefined) { //make sure the user knows what to pass in the req.body
-                throw new Error(`Invalid input. Please use "Mark" in the request body, for example:
-        {
-          "Mark": 5
-
-        }
-        `);
-            }
+            const mark = req.body.Mark;
             const enrolmentId = req.params.enrolmentId;
-            await this.service.updateGrade(grade, enrolmentId, id);
+            await this.service.updateMark(mark, enrolmentId, id);
             res.send(`Mark has been updated`);
 
         } catch (error) {

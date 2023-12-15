@@ -5,15 +5,15 @@ const AvailableCoursesDto = require('../dtos/availableCoursesDto')
 
 
 const mapToAvailableCourseDto = (row) => {
-    return new AvailableCoursesDto(row.Title, row.TeacherName, 'yes')
+    return new AvailableCoursesDto(row.Title, row.TeacherName)
 }
 
 const mapToCourse = (row) => {
     return new Course(row.CourseID, row.Title, row.TeacherID, row.isAvailable);
 }
 
-const mapToEnrollment = (row) => {
-    return new Enrollment(row.EnrollmentID, row.Mark, row.CourseID, row.UserID);
+const mapToEnrolment = (row) => {
+    return new Enrollment(row.EnrolmentID, row.Mark, row.CourseID, row.UserID);
 }
 
 const mapToUser = (row) => {
@@ -22,8 +22,8 @@ const mapToUser = (row) => {
 
 
 module.exports = {
-    mapToUser: mapToUser,
-    mapToEnrollment: mapToEnrollment,
+    mapToAvailableCourseDto: mapToAvailableCourseDto,
     mapToCourse: mapToCourse,
-    mapToAvailableCourseDto: mapToAvailableCourseDto
+    mapToEnrolment: mapToEnrolment,
+    mapToUser: mapToUser
 }
