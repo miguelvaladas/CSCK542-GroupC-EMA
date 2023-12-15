@@ -1,10 +1,10 @@
-class AvailableCoursesDto {
-  constructor(Title, Teacher_Name, Available) { //changed what is displayed for student readability
-      this.Title = Title;
-      this.Teacher_Name = Teacher_Name
-      this.Available = Available;
+class AvailableCourseDto {
 
-  }
+    constructor(title, teacherName) { //Dto for student readability
+        this.title = title;
+        this.teacherName = teacherName
+    }
 }
 
-module.exports = AvailableCoursesDto;
+
+module.exports = AvailableCourseDto;
