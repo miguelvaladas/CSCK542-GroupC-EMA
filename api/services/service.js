@@ -52,16 +52,12 @@ class Service {
         }
     }
 
-    async enroll(courseId, userId) {
-        const course = await this.dao.getCourseById(courseId);
-        if (!course) {
-            throw new Error('Course not found');
-        }
-        await this.dao.enroll(courseId, userId);
+    async createEnrolment(courseId, userId) {
+        await this.dao.createEnrolment(courseId, userId);
     }
 
     async getEnrolments() {
-        return await this.dao.returnEnrolments();
+        return await this.dao.getEnrolments();
     }
 
     async updateMark(mark, enrolmentId, userId) {

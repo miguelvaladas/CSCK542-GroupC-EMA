@@ -38,7 +38,7 @@ class Dao {
             const result = await this.databaseConnection.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
             const course = result[0][0]
             if (course === undefined) {
-                throw new Error("course not found")
+                throw new Error("Course not found")
             }
             return mappers.mapToCourse(course);
 
@@ -52,12 +52,14 @@ class Dao {
         try {
             const result = await this.databaseConnection.query('SELECT * FROM users WHERE UserID = ?', [userId]);
             const user = result[0][0]
+            if (user === undefined) {
+                throw new Error("User not found")
+            }
             return mappers.mapToUser(user)
         } catch (error) {
             console.error('Error in getUserById:', error);
             throw error;
         }
-
     }
 
     async assignTeacher(teacherId, courseId) {
@@ -69,7 +71,7 @@ class Dao {
         }
     }
 
-    async enroll(courseId, userId) {
+    async createEnrolment(courseId, userId) {
         try {
             const [existingEnrolment] = await this.databaseConnection.query('SELECT * FROM enrolments WHERE CourseID = ? AND UserID = ?', [courseId, userId]);
             if (existingEnrolment.length > 0) {
@@ -83,7 +85,7 @@ class Dao {
         }
     }
 
-    async returnEnrolments() {
+    async getEnrolments() {
         try {
             const [rows] = await this.databaseConnection.query('SELECT * FROM enrolments');
             return rows.map(mappers.mapToEnrolment);
