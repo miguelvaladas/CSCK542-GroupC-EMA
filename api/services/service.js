@@ -15,8 +15,7 @@ class Service {
     }
 
     async getUserById(id) {
-        const user = await this.dao.getUserById(id);
-        return user
+        return await this.dao.getUserById(id);
     }
 
     async getCourses(userId) {
@@ -30,12 +29,12 @@ class Service {
     }
 
     async getCourse(id) {
-        const course =  await this.dao.getCourseById(id);
-        return course
+        return await this.dao.getCourseById(id);
     }
 
     async updateCourse(data, courseId) {
         if ("TeacherID" in data) {
+<<<<<<< HEAD
           return await this.dao.assignTeacher(data.TeacherID, courseId);
         }
         if ("isAvailable" in data || data.isAvailable === 1) {
@@ -51,24 +50,56 @@ class Service {
 
         if (!course) {
             throw new Error('Course not found');
+=======
+            return await this.dao.assignTeacher(data.TeacherID, courseId);
+
+        } else if ("isAvailable" in data) {
+            return await this.dao.updateCourseAvailability(courseId, data.isAvailable);
+
+        } else {
+            throw new Error(`Invalid input. Please use "isAvailable" or "TeacherID" in the request body, for example:
+            {
+              "TeacherID" : 5
+            }
+                OR
+            {
+              "isAvailable" : 1
+            }
+            `);
+>>>>>>> 531ca6b07328752395a8e104b3b8c79e501b6921
         }
-        await this.dao.enroll(courseId, userId);
     }
 
+    async createEnrolment(courseId, userId) {
+        await this.dao.createEnrolment(courseId, userId);
+    }
 
     async getEnrolments() {
-        return await this.dao.returnEnrolments();
+        return await this.dao.getEnrolments();
     }
 
-    async updateGrade(Mark, EnrolmentID, userID) {
-        const user = await this.dao.getUserById(userID);
+    async updateMark(mark, enrolmentId, userId) {
+        if (mark === undefined) { //make sure the user knows what to pass in the req.body
+            throw new Error(`Invalid input. Please use "Mark" in the request body, for example:
+        {
+          "Mark": 5
+
+        }
+        `);
+        }
+
+        const user = await this.dao.getUserById(userId);
         if (!user || user.roleId !== Role.TEACHER) {
             throw new Error(`User does not have permission`);
         }
-        await this.dao.updateGrade(Mark, EnrolmentID);
-
+        await this.dao.updateMark(mark, enrolmentId, userId);
     }
+<<<<<<< HEAD
   }
+
+=======
+}
+>>>>>>> 531ca6b07328752395a8e104b3b8c79e501b6921
 
 
 module.exports = Service;
