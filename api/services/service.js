@@ -34,23 +34,6 @@ class Service {
 
     async updateCourse(data, courseId) {
         if ("TeacherID" in data) {
-<<<<<<< HEAD
-          return await this.dao.assignTeacher(data.TeacherID, courseId);
-        }
-        if ("isAvailable" in data || data.isAvailable === 1) {
-          return await this.dao.availCourse(courseId);
-     }
-        if ("isAvailable" in data || data.isAvailable === 0) {
-          return await this.dao.unAvailCourse(courseId);
-      }
-        }
-
-    async enroll(courseId, userId) {
-        const course = await this.dao.getCourseById(courseId);
-
-        if (!course) {
-            throw new Error('Course not found');
-=======
             return await this.dao.assignTeacher(data.TeacherID, courseId);
 
         } else if ("isAvailable" in data) {
@@ -66,7 +49,6 @@ class Service {
               "isAvailable" : 1
             }
             `);
->>>>>>> 531ca6b07328752395a8e104b3b8c79e501b6921
         }
     }
 
@@ -94,12 +76,7 @@ class Service {
         }
         await this.dao.updateMark(mark, enrolmentId, userId);
     }
-<<<<<<< HEAD
-  }
-
-=======
 }
->>>>>>> 531ca6b07328752395a8e104b3b8c79e501b6921
 
 
 module.exports = Service;
