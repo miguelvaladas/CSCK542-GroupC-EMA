@@ -17,4 +17,5 @@ class RoleMiddleware {
     }
 }
 
+
 module.exports = RoleMiddleware;

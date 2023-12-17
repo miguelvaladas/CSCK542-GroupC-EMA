@@ -8,4 +8,5 @@ class Enrolment {
     }
 }
 
+
 module.exports = Enrolment;

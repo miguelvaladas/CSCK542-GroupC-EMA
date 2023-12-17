@@ -2,7 +2,7 @@
   "name": "csck542-groupc-ema",
   "version": "1.0.0",
   "description": "Repository for UoL Group C's End Of Module assignment regarding Databases and Information Systems.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon api/app.js"

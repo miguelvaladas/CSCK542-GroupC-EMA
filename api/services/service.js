@@ -15,8 +15,7 @@ class Service {
     }
 
     async getUserById(id) {
-        const user = await this.dao.getUserById(id);
-        return user
+        return await this.dao.getUserById(id);
     }
 
     async getCourses(userId) {
@@ -30,43 +29,54 @@ class Service {
     }
 
     async getCourse(id) {
-        const course =  await this.dao.getCourseById(id);
-        return course
+        return await this.dao.getCourseById(id);
     }
 
     async updateCourse(data, courseId) {
         if ("TeacherID" in data) {
-          return await this.dao.assignTeacher(data.TeacherID, courseId);
-        }
-        if ("isAvailable" in data) {
-          return await this.dao.availCourse(courseId, data.isAvailable);
-     }
+            return await this.dao.assignTeacher(data.TeacherID, courseId);
 
-        }
+        } else if ("isAvailable" in data) {
+            return await this.dao.updateCourseAvailability(courseId, data.isAvailable);
 
-    async enroll(courseId, userId) {
-        const course = await this.dao.getCourseById(courseId);
-
-        if (!course) {
-            throw new Error('Course not found');
+        } else {
+            throw new Error(`Invalid input. Please use "isAvailable" or "TeacherID" in the request body, for example:
+            {
+              "TeacherID" : 5
+            }
+                OR
+            {
+              "isAvailable" : 1
+            }
+            `);
         }
-        await this.dao.enroll(courseId, userId);
     }
 
+    async createEnrolment(courseId, userId) {
+        await this.dao.createEnrolment(courseId, userId);
+    }
 
     async getEnrolments() {
-        return await this.dao.returnEnrolments();
+        return await this.dao.getEnrolments();
     }
 
-    async updateGrade(Mark, EnrolmentID, userID) {
-        const user = await this.dao.getUserById(userID);
+    async updateMark(mark, enrolmentId, userId) {
+        if (mark === undefined) { //make sure the user knows what to pass in the req.body
+            throw new Error(`Invalid input. Please use "Mark" in the request body, for example:
+        {
+          "Mark": 5
+
+        }
+        `);
+        }
+
+        const user = await this.dao.getUserById(userId);
         if (!user || user.roleId !== Role.TEACHER) {
             throw new Error(`User does not have permission`);
         }
-        await this.dao.updateGrade(Mark, EnrolmentID);
-
+        await this.dao.updateMark(mark, enrolmentId, userId);
     }
-  }
+}
 
 
 module.exports = Service;
