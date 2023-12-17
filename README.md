@@ -6,4 +6,4 @@ Repository for UoL Group C's End Of Module assignment regarding Databases and In
 Run `npm install`
 
 - Start server
-Run `node ./api/app.js`
+Run `npm start`

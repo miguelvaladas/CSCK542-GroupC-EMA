@@ -36,7 +36,8 @@ class Service {
         if ("TeacherID" in data) {
             return await this.dao.assignTeacher(data.TeacherID, courseId);
 
-        } else if ("isAvailable" in data) {
+        } else if ("isAvailable" in data ) {
+          this.checkDataValidity(data)
             return await this.dao.updateCourseAvailability(courseId, data.isAvailable);
 
         } else {
@@ -51,6 +52,13 @@ class Service {
             `);
         }
     }
+    checkDataValidity (data) {
+      const value = Object.values(data)
+      if (value != 1 && value != 0) {
+        throw new Error("invalid input, please use either 1 or 0")
+      }
+    }
+
 
     async createEnrolment(courseId, userId) {
         await this.dao.createEnrolment(courseId, userId);

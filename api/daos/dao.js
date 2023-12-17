@@ -33,6 +33,7 @@ class Dao {
         }
     }
 
+
     async getCourseById(id) {
         try {
             const result = await this.databaseConnection.query('SELECT * FROM courses WHERE CourseID = ?', [id]);
