@@ -66,6 +66,7 @@ class Dao {
     async assignTeacher(teacherId, courseId) {
         try {
             await this.databaseConnection.query('UPDATE courses SET TeacherID = ? WHERE CourseID = ?', [teacherId, courseId]);
+
         } catch (error) {
             console.error('Error in assignTeacher:', error);
             throw error;

@@ -62,6 +62,7 @@ class Controller {
         try {
             const data = req.body
             const courseId = req.params.courseId;
+
             await this.service.updateCourse(data, courseId);
             res.send(`Course has been updated`);
 
