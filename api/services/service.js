@@ -33,6 +33,9 @@ class Service {
     }
 
     async updateCourse(data, courseId) {
+      const course = await this.dao.getCourseById(courseId)
+      if (!course) {
+        return res.status(404).send('Course not found');}
         if ("TeacherID" in data) {
             return await this.dao.assignTeacher(data.TeacherID, courseId);
 
